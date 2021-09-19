@@ -1,0 +1,68 @@
+Queries for cleaning data:
+SELECT * FROM sales.transactions;
+
+select * from sales.transactions where currency = "USD";
+
+
+SET SQL_SAFE_UPDATES = 0;
+
+update sales.transactions set sales_amount = sales_amount*74, currency = "INR" where currency = "USD";
+
+update sales.transactions set sales_amount = 1 where sales_amount<0;
+
+SET SQL_SAFE_UPDATES = 1;
+
+
+SET SQL_SAFE_UPDATES = 0;
+
+select * from sales.transactions where market_code = "Mark 097" or market_code = "Mark 999";
+
+select * from sales.markets where zone = "";
+
+delete from sales.markets where zone = "";
+
+SET SQL_SAFE_UPDATES = 1;
+
+
+SET SQL_SAFE_UPDATES = 0;
+
+alter table sales.transactions rename column profit_margin to profit;
+
+alter table sales.transactions rename column profit_margin_percentage to profit_margin;
+
+SET SQL_SAFE_UPDATES = 1;
+
+
+
+Queries for analysis:
+
+A)Revenue breakdown by months and years:
+
+select sales.date.year , sales.date.month_name , SUM(sales.transactions.sales_amount)
+from
+sales.transactions
+inner join
+sales.date
+on 
+sales.transactions.order_date=sales.date.date
+group by
+sales.date.year, sales.date.month_name
+order by
+sales.date.year;
+
+
+B)Revenue breakdown by cities:
+
+SELECT sales.markets.markets_code , sales.markets.markets_name , SUM(sales.transactions.sales_amount)
+FROM
+sales.transactions
+inner join
+sales.markets
+on
+sales.transactions.market_code = sales.markets.markets_code
+group by
+sales.markets.markets_name
+order by
+sales.markets.markets_code;
+
+
